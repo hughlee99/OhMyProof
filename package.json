@@ -1,0 +1,42 @@
+{
+  "name": "ohmyproof",
+  "version": "0.2.0",
+  "description": "Evidence-driven vibe coding: turn AI suggestions into falsifiable experiments and executable evidence.",
+  "type": "module",
+  "bin": {
+    "ohmyproof": "./bin/ohmyproof.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "docs/",
+    "examples/",
+    "README.md",
+    "README.ko.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "check": "node ./bin/ohmyproof.js help",
+    "demo": "node ./bin/ohmyproof.js campaign --campaign examples/retrieval-campaign/campaign.json --repo .",
+    "public:check": "node ./scripts/public-check.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "ai",
+    "coding-agent",
+    "evaluation",
+    "simulation",
+    "harness",
+    "vibe-coding",
+    "evidence",
+    "benchmark"
+  ],
+  "license": "MIT"
+}
