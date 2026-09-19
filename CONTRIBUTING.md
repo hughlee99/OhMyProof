@@ -17,6 +17,14 @@ Requirements:
 - Node.js 20+
 - Git
 
+Install the repository safety hooks once after cloning:
+
+```bash
+npm run hooks:install
+```
+
+The hooks check the exact staged content before commits and all tracked files before pushes for credentials, private keys, local machine paths, generated run artifacts, and other local-only files.
+
 Run the test suite:
 
 ```bash
