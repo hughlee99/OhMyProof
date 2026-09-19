@@ -1,0 +1,11 @@
+.ohmyproof/reports/
+.ohmyproof/runs/
+node_modules/
+coverage/
+.env
+.env.*
+!.env.example
+*.tgz
+*.log
+.DS_Store
+Thumbs.db

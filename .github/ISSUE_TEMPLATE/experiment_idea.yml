@@ -1,0 +1,23 @@
+name: Experiment idea
+description: Propose a reusable experiment primitive or falsification pattern
+title: "[Experiment] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: claim
+    attributes:
+      label: What technical claim should this help test?
+      placeholder: "Adding a cache reduces DB load without unacceptable stale reads."
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What executable evidence would support or contradict it?
+    validations:
+      required: true
+  - type: textarea
+    id: generality
+    attributes:
+      label: Why is this reusable across projects?
+      description: Explain why this belongs in the core rather than one application's custom campaign.
