@@ -9,7 +9,6 @@
   "files": [
     "bin/",
     "src/",
-    "docs/",
     "examples/",
     "README.md",
     "README.ko.md",
@@ -19,7 +18,7 @@
   "scripts": {
     "test": "node --test",
     "check": "node ./bin/ohmyproof.js help",
-    "demo": "node ./bin/ohmyproof.js campaign --campaign examples/retrieval-campaign/campaign.json --repo .",
+    "demo": "node ./bin/ohmyproof.js campaign --campaign examples/basic-campaign/campaign.json --repo .",
     "public:check": "node ./scripts/public-check.mjs",
     "hooks:install": "node ./scripts/install-git-hooks.mjs"
   },

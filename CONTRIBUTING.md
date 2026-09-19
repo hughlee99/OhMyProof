@@ -35,7 +35,7 @@ Run the local retrieval campaign:
 
 ```bash
 node ./bin/ohmyproof.js campaign \
-  --campaign examples/retrieval-campaign/campaign.json \
+  --campaign examples/basic-campaign/campaign.json \
   --repo .
 ```
 
