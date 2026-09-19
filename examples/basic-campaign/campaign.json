@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "question": "Can caching reduce backend reads without serving stale data?",
+  "candidates": [
+    {"id":"no_cache","label":"No cache","env":{"METHOD":"no_cache"}},
+    {"id":"cache","label":"Cache without invalidation","env":{"METHOD":"cache"}},
+    {"id":"cache_invalidate","label":"Cache + invalidate on write","env":{"METHOD":"cache_invalidate"}}
+  ],
+  "worlds": [
+    {"id":"read-heavy","split":"explore","env":{"READS":"120","WRITES":"0","KEYS":"8"}},
+    {"id":"mixed","split":"calibration","env":{"READS":"120","WRITES":"3","KEYS":"8"}},
+    {"id":"write-heavy","split":"heldout","env":{"READS":"160","WRITES":"8","KEYS":"12"}}
+  ],
+  "simulations": [
+    {
+      "id":"cache-workload",
+      "title":"Small cache workload",
+      "category":"behavior",
+      "argv":["node","examples/basic-campaign/sim/run.mjs"],
+      "repeats":1,
+      "timeoutMs":30000,
+      "expectExitCode":0
+    }
+  ],
+  "metrics": [
+    {"name":"fresh_read_rate","direction":"higher"},
+    {"name":"backend_calls","direction":"lower"},
+    {"name":"cache_entries","direction":"lower"}
+  ],
+  "selection": {
+    "split":"calibration",
+    "constraints":[
+      {"metric":"fresh_read_rate","stat":"min","operator":">=","value":1}
+    ],
+    "objective":{"metric":"backend_calls","stat":"mean","direction":"lower"}
+  },
+  "failureMining":{"enabled":true},
+  "unknowns":[
+    "This demo uses an in-memory synthetic workload, not a production cache or database.",
+    "It demonstrates the experiment shape, not a universal caching recommendation."
+  ]
+}

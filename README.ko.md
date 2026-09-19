@@ -90,43 +90,39 @@ Candidates
 
 ```bash
 node ./bin/ohmyproof.js campaign \
-  --campaign examples/retrieval-campaign/campaign.json \
+  --campaign examples/basic-campaign/campaign.json \
   --repo .
 ```
 
-현재 repo에 들어있는 demo는 Full Context, Token Match, Character n-gram, Character n-gram + Recent Context 네 가지 retrieval 방식을 비교합니다.
-여기에 `Top-K = 5 / 10 / 20`을 바꿔가며 여러 seed에서 반복해서 돌리고, 전부 합치면 60개 experiment cell이 됩니다.
+repo에 들어있는 demo는 일부러 작게 만들었습니다. `No cache`, `Cache without invalidation`, `Cache + invalidate on write` 세 가지를 read-heavy / mixed / write-heavy 세 조건에서 비교합니다. 전부 합쳐도 9개 experiment cell이라 Campaign이 어떻게 동작하는지만 바로 볼 수 있습니다.
 
 ---
 
 ## 실제로 돌려보니
 
-최근 로컬 실행에서는 calibration 단계에서 아래 설정이 선택됐습니다.
+demo에서는 calibration 단계에서 아래 후보가 선택됩니다.
 
 ```text
-Character n-gram + Recent Context
-Top-K = 5
+Cache + invalidate on write
 ```
 
 ```text
-Calibration recall
-mean     100.00%
-worst    100.00%
+Calibration
+fresh_read_rate   100.00%
+backend_calls       7
 
-Held-out recall
-mean      99.875%
-worst     99.75%
+Held-out
+fresh_read_rate   100.00%
+backend_calls      12
 
 Held-out constraint
 PASSED
 ```
 
-수치만 보면 이 설정이 가장 좋아 보입니다.
-그런데 failure case를 같이 보니 Token Match는 **오타**에서 많이 깨졌고, Character n-gram은 **follow-up query**에서 많이 깨졌습니다. Recent Context를 넣었을 때는 그쪽 문제가 대부분 복구됐습니다.
-어떤 방법이 좋은지도 봐야 하지만, 왜 다른 방법이 좋지 않은지를 알면 다음에 뭘 바꿔볼지도 같이 보이게 되는 것 같습니다.
+무효화 없는 cache는 backend call을 4번까지 줄이지만 calibration에서 stale read가 45번, held-out에서는 93번 발생합니다. 반대로 write 때 cache를 무효화하면 freshness를 유지하면서도 no-cache보다 backend call을 크게 줄일 수 있습니다.
+점수 하나만 보는 것보다 이렇게 어떤 후보가 어디서 깨지는지를 같이 보는 게 Campaign의 핵심입니다.
 
 ---
-
 ## Calibration 결과
 
 실험이 과적합할 수 있습니다.
@@ -150,7 +146,7 @@ Calibration에서 후보와 parameter를 고른 뒤 설정을 고정하고, held
 
 ```bash
 node ./bin/ohmyproof.js investigate \
-  "What simple retrieval architecture should this project use?" \
+  "Should this project add caching, and if so how?" \
   --repo . \
   --agent codex
 ```

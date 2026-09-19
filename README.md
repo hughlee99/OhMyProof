@@ -107,53 +107,40 @@ Candidates
 
 ```bash
 node ./bin/ohmyproof.js campaign \
-  --campaign examples/retrieval-campaign/campaign.json \
+  --campaign examples/basic-campaign/campaign.json \
   --repo .
 ```
 
-The demo in this repo compares:
-
-- Full Context
-- Token Match
-- Character n-gram
-- Character n-gram + Recent Context
-
-It also sweeps `Top-K = 5 / 10 / 20` across multiple seeded worlds.
-
-60 experiment cells in total.
+The demo in this repo is intentionally small. It compares `No cache`, `Cache without invalidation`, and `Cache + invalidate on write` across read-heavy, mixed, and write-heavy worlds. That's nine experiment cells total, just enough to see how a Campaign works without turning the example into its own benchmark project.
 
 ---
 
 ## What happened when I ran it
 
-On my latest local run, calibration picked:
+Calibration selects:
 
 ```text
-Character n-gram + Recent Context
-Top-K = 5
+Cache + invalidate on write
 ```
 
 ```text
-Calibration recall
-mean     100.00%
-worst    100.00%
+Calibration
+fresh_read_rate   100.00%
+backend_calls       7
 
-Held-out recall
-mean      99.875%
-worst     99.75%
+Held-out
+fresh_read_rate   100.00%
+backend_calls      12
 
 Held-out constraint
 PASSED
 ```
 
-That looks pretty clear until you look at the failures.
+The cache without invalidation gets backend calls down to 4, but it also produces 45 stale reads during calibration and 93 on the held-out world. Invalidating on writes keeps reads fresh while still cutting backend calls well below the no-cache baseline.
 
-Token Match mostly broke on typos. Character n-gram mostly broke on follow-up queries. Adding Recent Context recovered most of those follow-up failures.
-
-The winning number matters, but the failures usually tell me more about what to try next.
+That's the useful part of Campaign mode: not just which candidate wins, but where the others break.
 
 ---
-
 ## Calibration can lie too
 
 An experiment can overfit.
@@ -182,7 +169,7 @@ This part is still experimental.
 
 ```bash
 node ./bin/ohmyproof.js investigate \
-  "What simple retrieval architecture should this project use?" \
+  "Should this project add caching, and if so how?" \
   --repo . \
   --agent codex
 ```
